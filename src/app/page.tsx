@@ -1,9 +1,9 @@
-import HeaderSection from "@/components/HeaderSection/HeaderSection";
+import ServicesSection from "@/components/ServicesSection/ServicesSection";
 
 export default function Home() {
   return (
-    <main className="font-Montreal_book">
-      <HeaderSection/>
+    <main>
+      <ServicesSection/>
     </main>
   );
 }

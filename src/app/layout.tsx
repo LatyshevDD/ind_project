@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from 'next/font/local'
+import HeaderSection from "@/components/HeaderSection/HeaderSection";
+import React from "react";
 
 const NeueMontreal = localFont({
   src: '../fonts/ppneuemontreal-book.otf',
@@ -21,8 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${NeueMontreal.variable} antialiased bg-white`}
+        className={`${NeueMontreal.variable} antialiased bg-white font-Montreal_book`}
       >
+        <HeaderSection/>
         {children}
       </body>
     </html>
