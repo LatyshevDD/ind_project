@@ -14,15 +14,17 @@ export default function ServicesSlider() {
   const sliderMobileRef = useRef<HTMLDivElement | null>(null);
   
   //Информация для работы слайдера на мобильных разрешениях (менее 768px)
-  let sliderMobileElements: NodeListOf<Element> | null = null;
+  const [sliderMobileElements, setSliderMobileElements] = useState<NodeListOf<Element> | [] >([]);
+  // let sliderMobileElements: NodeListOf<Element> | null = null;
   const [selectedSlideItem, setSelectedSlideItems] = useState(0);
   
   useEffect(() => {
-    sliderMobileElements = document.querySelectorAll("#slederMobileContainer>div");
-  })
+    // sliderMobileElements = document.querySelectorAll("#slederMobileContainer>div");
+    setSliderMobileElements(document.querySelectorAll("#slederMobileContainer>div"));
+  }, [])
   
   const handleNext = () => {
-    //Устанавливаем шаг скрола в зависимости от ширины экрана и делаем скрол вперед
+    //Устанавливаем шаг скрола в зависимости от ширины экрана и делаем скрол вперед, скролим на длину элемента + 16px gap
     if(width >= 1280) {
       const maxScrollPosition = sliderDesktopeRef.current ? sliderDesktopeRef.current?.scrollWidth - (((width-80)/4) + 16) : 0
       if(scrollPosition >= maxScrollPosition) {
@@ -104,8 +106,55 @@ export default function ServicesSlider() {
     }
   }
   
+  const handlePaginationClick = (sliderItemNumber: number) => {
+    if(sliderMobileElements) {
+      sliderMobileElements[sliderItemNumber].scrollIntoView({ behavior: 'smooth' });
+    }
+    setSelectedSlideItems(sliderItemNumber);
+    return
+  }
+  
   return (
     <>
+      {/* Пагинация для мобильных разрешений */}
+      <div id="Pagination" className="flex md:hidden pt-10 gap-2">
+        {
+          sliderMobileElements !== null ?
+          Array.from(sliderMobileElements).map((item, index) => {
+            if(index === selectedSlideItem){
+              return (
+                <button
+                  key={index}
+                  onClick={() => handlePaginationClick(index)}
+                >
+                  <Image
+                    src={"/images/pagination_active_image.png"}
+                    alt={"Активная пагинация"}
+                    width={40}
+                    height={8}
+                  />
+                </button>
+              )
+            }
+            if(index !== selectedSlideItem){
+              return (
+                <button
+                  key={index}
+                  onClick={() => handlePaginationClick(index)}
+                >
+                  <Image
+                    src={"/images/pagination_image.png"}
+                    alt={"Неактивная пагинация"}
+                    width={8}
+                    height={8}
+                    key={index}
+                  />
+                </button>
+              )
+            }
+          }) : null
+        }
+      </div>
       {/* Верстка слайдера для разрешений превышающих 768px */}
       <div ref={sliderDesktopeRef} className={`hidden md:flex flex-nowrap gap-4 pt-10 overflow-x-scroll ${styles.scrollbar_none} ${styles.container_snap}`}>
         {
@@ -161,9 +210,23 @@ export default function ServicesSlider() {
           })
         }
       </div>
-      <div className="flex gap-5 text-black text-xl">
-        <button onClick={handleNext}>Next</button>
-        <button onClick={handlePrev}>Prev</button>
+      <div className="flex gap-5 text-black text-xl pt-10">
+        <button onClick={handlePrev}>
+          <Image
+            src={"/icons/arrow-left_icon.svg"}
+            alt={"Кнопка - переключить предыдущий слайд"}
+            width={20}
+            height={20}
+          />
+        </button>
+        <button onClick={handleNext}>
+          <Image
+            src={"/icons/arrow-right_icon.svg"}
+            alt={"Кнопка - переключить следующий слайд"}
+            width={20}
+            height={20}
+          />
+        </button>
       </div>
     </>
   )
