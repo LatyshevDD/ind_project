@@ -13,6 +13,14 @@ export default function ServicesSlider() {
   const sliderDesktopeRef = useRef<HTMLDivElement | null>(null);
   const sliderMobileRef = useRef<HTMLDivElement | null>(null);
   
+  //Информация для работы слайдера на мобильных разрешениях (менее 768px)
+  let sliderMobileElements: NodeListOf<Element> | null = null;
+  const [selectedSlideItem, setSelectedSlideItems] = useState(0);
+  
+  useEffect(() => {
+    sliderMobileElements = document.querySelectorAll("#slederMobileContainer>div");
+  })
+  
   const handleNext = () => {
     //Устанавливаем шаг скрола в зависимости от ширины экрана и делаем скрол вперед
     if(width >= 1280) {
@@ -44,17 +52,14 @@ export default function ServicesSlider() {
       return;
     }
     if(width <= 768) {
-      const maxScrollPosition = sliderMobileRef.current ? sliderMobileRef.current?.scrollWidth - ((width-32) + 16) : 0
-      if(scrollPosition >= maxScrollPosition) {
+      if(sliderMobileElements && selectedSlideItem === sliderMobileElements?.length - 1){
         return
       }
-      const newScrollPosition = scrollPosition + ((width-32) + 16)
-      sliderMobileRef.current?.scrollTo({
-        top: 0,
-        left: newScrollPosition,
-        behavior: 'smooth'
-      });
-      setScrollPosition(newScrollPosition)
+      const newSelectedSlideItem = selectedSlideItem + 1
+      if(sliderMobileElements) {
+        sliderMobileElements[newSelectedSlideItem].scrollIntoView({ behavior: 'smooth' });
+      }
+      setSelectedSlideItems(newSelectedSlideItem);
       return
     }
   }
@@ -71,6 +76,30 @@ export default function ServicesSlider() {
         behavior: 'smooth'
       });
       setScrollPosition(newScrollPosition)
+      return
+    }
+    if(width > 768) {
+      if(scrollPosition <= 0) {
+        return
+      }
+      const newScrollPosition = scrollPosition - (((width-64)/3) + 16)
+      sliderDesktopeRef.current?.scrollTo({
+        top: 0,
+        left: newScrollPosition,
+        behavior: 'smooth'
+      });
+      setScrollPosition(newScrollPosition)
+      return
+    }
+    if(width <= 768) {
+      if(selectedSlideItem === 0){
+        return
+      }
+      const newSelectedSlideItem = selectedSlideItem-1;
+      if(sliderMobileElements) {
+        sliderMobileElements[newSelectedSlideItem].scrollIntoView({ behavior: 'smooth' });
+      }
+      setSelectedSlideItems(newSelectedSlideItem);
       return
     }
   }
@@ -101,22 +130,31 @@ export default function ServicesSlider() {
             })
         }
       </div>
-      <div ref={sliderMobileRef} className={`flex md:hidden flex-nowrap gap-4 pt-10 overflow-x-scroll ${styles.scrollbar_none} ${styles.container_snap}`}>
+      
+      {/* Верстка слайдера для разрешений менее 768px */}
+      <div id="slederMobileContainer" ref={sliderMobileRef} className={`flex md:hidden flex-nowrap gap-4 pt-10 overflow-x-scroll ${styles.scrollbar_none} ${styles.container_snap}`}>
         {
           services.map((service, index) => {
             return (
               <div
-                className={`flex flex-none flex-col gap-[56px] items-start bg-[#F0F0F0] rounded-lg p-6 w-[calc(100vw-32px)] hover:opacity-60 cursor-pointer`}
+                className={`flex flex-none flex-col gap-[60px] items-start bg-[#F0F0F0] rounded-lg p-4 w-[calc(100vw-32px)] hover:opacity-60 cursor-pointer`}
                 key={index}
+                id={`sliderMobileItem - ${index}`}
               >
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  width={80}
-                  height={80}
-                />
-                <p className="text-black text-[32px] leading-9 font-normal">
-                  {service.title}
+                <div className="flex gap-6">
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    width={60}
+                    height={60}
+                    style={{objectFit: 'contain'}}
+                  />
+                  <p className="text-black text-[24px] leading-[28px] font-normal">
+                    {service.title}
+                  </p>
+                </div>
+                <p className="text-black text-[14px] leading-[20px] font-normal">
+                  {service.description}
                 </p>
               </div>
             )

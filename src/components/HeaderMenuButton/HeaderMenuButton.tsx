@@ -17,7 +17,7 @@ export default function HeaderMenuButton() {
           Меню
         </p>
       </button>
-      <nav className={`absolute top-[35px] right-0 bg-[#F0F0F0] overflow-hidden transition-all ${isOpenMenu ? "h-auto p-4" : "h-0"}`}>
+      <nav className={`absolute top-[35px] right-0 bg-[rgb(160,157,157)] overflow-hidden transition-all ${isOpenMenu ? "h-auto p-4" : "h-0"}`}>
         <ul className="flex flex-col gap-6">
           <li>
             <button className="hover:opacity-60 transition-opacity">
