@@ -1,4 +1,4 @@
-# Sliser on NEXT JS
+# Slider on NEXT JS
 
 ---
 
