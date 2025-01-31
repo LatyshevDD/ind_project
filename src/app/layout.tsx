@@ -5,7 +5,7 @@ import HeaderSection from "@/components/HeaderSection/HeaderSection";
 import React from "react";
 
 const NeueMontreal = localFont({
-  src: '../fonts/ppneuemontreal-book.otf',
+  src: './fonts/ppneuemontreal-book.otf',
   variable: '--Montreal-book',
 })
 
